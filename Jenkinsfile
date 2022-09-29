@@ -16,7 +16,7 @@ pipeline {
             steps {
                 sshagent(credentials: ["${key}"]) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ${server} << EOF
+                        ssh -o StrictHostKeyChecking=no ${ip} << EOF
                         cd ${dir}
                         git remote add ${remotename} ${remoteurl} || git remote set-url ${remotename} ${remoteurl}
                         git pull ${remotename} ${branch}
@@ -30,7 +30,7 @@ pipeline {
             steps {
                 sshagent(credentials: ["${key}"]) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ${server} << EOF
+                        ssh -o StrictHostKeyChecking=no ${ip} << EOF
                         cd ${dir}
                         docker build -t ${image} .
                         EOF
@@ -43,7 +43,7 @@ pipeline {
             steps {
                 sshagent(credentials: ["${key}"]) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ${server} << EOF
+                        ssh -o StrictHostKeyChecking=no ${ip} << EOF
                         cd ${dir}
                         // docker compose -f ${compose} down
                         docker compose -f ${compose} up -d
@@ -57,10 +57,10 @@ pipeline {
             steps {
                 sshagent(credentials: ["${key}"]) {
                     sh """
-                        ssh -tt ${username}@${ip} <<pwd
+                        ssh -o StrictHostKeyChecking=no ${ip} << EOF
                         docker image push ${image}
                         docker image prune -f --all
-                        pwd
+                        EOF
                     """
                 }
             }
