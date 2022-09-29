@@ -16,11 +16,11 @@ pipeline {
             steps {
                 sshagent(credentials: ["${key}"]) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ${ip} << EOF
+                        ssh -o StrictHostKeyChecking=no ${ip} <<pwd
                         cd ${dir}
                         git remote add ${remotename} ${remoteurl} || git remote set-url ${remotename} ${remoteurl}
                         git pull ${remotename} ${branch}
-                        EOF
+                        pwd
                     """
                 }
             }
@@ -30,10 +30,10 @@ pipeline {
             steps {
                 sshagent(credentials: ["${key}"]) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ${ip} << EOF
+                        ssh -o StrictHostKeyChecking=no ${ip} << pwd
                         cd ${dir}
                         docker build -t ${image} .
-                        EOF
+                        pwd
                     """
                 }
             }
@@ -43,11 +43,11 @@ pipeline {
             steps {
                 sshagent(credentials: ["${key}"]) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ${ip} << EOF
+                        ssh -o StrictHostKeyChecking=no ${ip} << pwd
                         cd ${dir}
                         // docker compose -f ${compose} down
                         docker compose -f ${compose} up -d
-                        EOF
+                        pwd
                     """
                 }
             }
@@ -57,10 +57,10 @@ pipeline {
             steps {
                 sshagent(credentials: ["${key}"]) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ${ip} << EOF
+                        ssh -o StrictHostKeyChecking=no ${ip} << pwd
                         docker image push ${image}
                         docker image prune -f --all
-                        EOF
+                        pwd
                     """
                 }
             }
