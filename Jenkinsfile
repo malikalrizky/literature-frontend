@@ -16,7 +16,7 @@ pipeline {
             steps {
                 sshagent(credentials: ["${key}"]) {
                     sh """
-                        ssh -l ${username} ${ip} <<pwd
+                        ssh -tt ${username}@${ip} <<pwd
                         cd ${dir}
                         git remote add ${remotename} ${remoteurl} || git remote set-url ${remotename} ${remoteurl}
                         git pull ${remotename} ${branch}
@@ -30,7 +30,7 @@ pipeline {
             steps {
                 sshagent(credentials: ["${key}"]) {
                     sh """
-                        ssh -l ${username} ${ip} <<pwd
+                        ssh -tt ${username}@${ip} <<pwd
                         cd ${dir}
                         docker build -t ${image} .
                         pwd
@@ -43,7 +43,7 @@ pipeline {
             steps {
                 sshagent(credentials: ["${key}"]) {
                     sh """
-                        ssh -l ${username} ${ip} <<pwd
+                        ssh -tt ${username}@${ip} <<pwd
                         cd ${dir}
                         // docker compose -f ${compose} down
                         docker compose -f ${compose} up -d
@@ -57,7 +57,7 @@ pipeline {
             steps {
                 sshagent(credentials: ["${key}"]) {
                     sh """
-                        ssh -l ${username} ${ip} <<pwd
+                        ssh -tt ${username}@${ip} <<pwd
                         docker image push ${image}
                         docker image prune -f --all
                         pwd
