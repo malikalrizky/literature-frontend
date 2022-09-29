@@ -5,7 +5,7 @@ def dir = "~/literature-frontend/"
 def ip = "103.186.0.248"
 def username = "malikal"
 def image = "malikalrk/literature-fe:latest"
-def key = "app-key"
+def key = "github"
 def compose = "fe.yml"
 
 pipeline {
