@@ -2,7 +2,7 @@ def branch = "production"
 def remoteurl = "https://github.com/malikalrizky/literature-frontend.git"
 def remotename = "jenkins"
 def dir = "~/literature-frontend/"
-def ip = "103.186.0.248"
+def ip = "malikal@103.186.0.248"
 def username = "malikal"
 def image = "malikalrk/literature-fe:latest"
 def key = "github"
@@ -16,11 +16,11 @@ pipeline {
             steps {
                 sshagent(credentials: ["${key}"]) {
                     sh """
-                        ssh -l ${username} ${ip} <<pwd
+                        ssh -o StrictHostKeyChecking=no ${server} << EOF
                         cd ${dir}
                         git remote add ${remotename} ${remoteurl} || git remote set-url ${remotename} ${remoteurl}
                         git pull ${remotename} ${branch}
-                        pwd
+                        EOF
                     """
                 }
             }
@@ -30,10 +30,10 @@ pipeline {
             steps {
                 sshagent(credentials: ["${key}"]) {
                     sh """
-                        ssh -l ${username} ${ip} <<pwd
+                        ssh -o StrictHostKeyChecking=no ${server} << EOF
                         cd ${dir}
                         docker build -t ${image} .
-                        pwd
+                        EOF
                     """
                 }
             }
@@ -43,11 +43,11 @@ pipeline {
             steps {
                 sshagent(credentials: ["${key}"]) {
                     sh """
-                        ssh -l ${username} ${ip} <<pwd
+                        ssh -o StrictHostKeyChecking=no ${server} << EOF
                         cd ${dir}
                         // docker compose -f ${compose} down
                         docker compose -f ${compose} up -d
-                        pwd
+                        EOF
                     """
                 }
             }
